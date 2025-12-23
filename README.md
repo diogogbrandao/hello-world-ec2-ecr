@@ -110,15 +110,15 @@ echo -e ${public_key} >> /home/ubuntu/.ssh/authorized_keys
 ```
 Como é possível perceber, são executado os passos:
 
-1. Instala o Docker
-2. Instala o utilitário unzip
-3. Instala a AWS CLI v2
-4. Autentica no Amazon ECR
-5. Realiza login no repositório Amazon ECR usando Docker.
-6. Faz o pull da imagem Docker da aplicação para o ECR.
-7. Executa o container da aplicação
-8. Mapeia a porta 8080 do container para a porta 8080 da instância EC2.
-9. Configura o acesso SSH
+1. Instalação do Docker
+2. Instalação do utilitário unzip
+3. Instalação do AWS CLI v2
+4. Autenticação no Amazon ECR
+5. Login no repositório Amazon ECR usando Docker.
+6. Pull da imagem Docker da aplicação para o ECR.
+7. Execução do container da aplicação
+8. Mapeiamento da porta 8080 do container para a porta 8080 da instância EC2.
+9. Configuração do acesso SSH
 
 
 
