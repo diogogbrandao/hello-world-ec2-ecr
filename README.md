@@ -1,1 +1,0 @@
-# hello-world-ec2-ecr
