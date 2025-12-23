@@ -110,10 +110,6 @@ echo -e ${public_key} >> /home/ubuntu/.ssh/authorized_keys
 ```
 Como é possível perceber, são executado os passos:
 
-Atualiza os pacotes do sistema
-
-Executa apt-get update e apt-get upgrade para garantir que o sistema esteja com os pacotes mais recentes.
-
 1. Instala o Docker
 2. Instala o utilitário unzip
 3. Instala a AWS CLI v2
