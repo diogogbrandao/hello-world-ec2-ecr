@@ -156,5 +156,5 @@ A EC2 e seu serviço serão criados em alguns segundos.
 Para verificar se o sistema está disponível e responder normalmente, execute esse comando no seu terminal:
 
 ```
-curl
+curl 
 ```
