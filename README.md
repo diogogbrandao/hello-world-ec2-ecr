@@ -22,7 +22,7 @@ Nesse projeto o Open Tofu automatiza a tarefa do deploy na AWS e foi construído
 
 As informações dos deploys do Open Tofu são guardadas no AWS S3 e no DynamoDB, possibilitando a leitura do estado atual de recursos na AWS e para _state locking_, respectivamente.
 
-Dentro da pasta system variáveis devem ser configuradas no arquivo variables.tf:
+Dentro da pasta system existem variáveis que devem ser configuradas no arquivo variables.tf:
 
 | Name                 | Type     | Default                                                                           | Description                                                                                        |
 | -------------------- | -------- | --------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
@@ -135,10 +135,26 @@ encrypt = true
 ```
 O _path_ no s3 é determinado por bucket + key. Além disso, configure o nome da tabela do Dynamo, além da região onde encontram-se esses recursos.
 
-Após isso as variáveis no arquivo variables.tf dentro da pasta system.
+Após isso conforme descrito anteriormente, as variáveis no arquivo variables.tf devem ser declaradas.
 
 Dentro do diretório execute o comando:
 
 ```
+open tofu init
+```
+
+E, depois:
+
+```
 open tofu apply
+```
+
+A EC2 e seu serviço serão criados em alguns segundos.
+
+## Teste do Sistema
+
+Para verificar se o sistema está disponível e responder normalmente, execute esse comando no seu terminal:
+
+```
+curl
 ```
