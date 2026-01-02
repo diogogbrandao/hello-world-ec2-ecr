@@ -43,9 +43,3 @@ variable "vpc_id" {
   description = "VPC id where the resources will be deployed. vpc_id should be set when target type is ip."
   default = "vpc-03dc75b6337a7883d"
 }
-
-variable "dynamodb_messages_table_name" {
-  type        = string
-  description = "Dynamodb table"
-  default = "messages-history"
-}
