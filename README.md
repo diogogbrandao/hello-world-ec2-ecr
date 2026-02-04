@@ -8,7 +8,7 @@ Assim, é possível utilizar o Docker na EC2 de uma maneira simples e barata. Al
 
 ## Pré-requisitos
 
-Os pré-requisitos para usar o código desse repositório são:
+Os pré-requisitos para implementar essa solução são:
 
 1. Ter o Docker Desktop instalado e rodando.
 2. Ter uma conta na AWS.
@@ -16,12 +16,12 @@ Os pré-requisitos para usar o código desse repositório são:
 4. Ter uma VPC operante.
 5. Ter um bucket do S3.
 6. Ter uma tabela no DynamoDB.
-7. Ter uma imagem de container salva em um repositório do ECR (um exemplo de imagem para testes está na pasta ec2_image). 
-8. Ter o Open Tofu instalado.
+7. Ter uma imagem de container salva em um repositório do ECR (um exemplo de Dockerfile para testes está na pasta ec2_image). 
+8. Ter o OpenTofu instalado.
 
-## Open Tofu
+## OpenTofu
 
-Nesse projeto o Open Tofu automatiza a tarefa do deploy na AWS e foi construído um módulo interno localizado na pasta system.
+Nesse projeto o OpenTofu automatiza a tarefa do deploy na AWS e foi construído um módulo interno localizado na pasta system.
 
 As informações dos deploys do Open Tofu são guardadas no AWS S3 e no DynamoDB, possibilitando a leitura do estado atual de recursos na AWS e para _state locking_, respectivamente.
 
@@ -37,9 +37,9 @@ Dentro da pasta system existem variáveis que devem ser configuradas no arquivo 
 | `availability_zone`  | `string` | `us-east-1a`                                                                      | Zona de disponibilidade onde a instância EC2 será criada.                                          |
 | `ebs_volume`         | `number` | `10`                                                                              | Tamanho do volume EBS da instância EC2, em GB.                                                     |
 | `env`                | `string` | `dev`                                                                             | Ambiente de implantação (ex: `dev`, `staging`, `prod`). Usado para separar e identificar recursos. |
-| `vpc_id`             | `string` | `vpc-abcd`                                                                        | ID da VPC onde os recursos serão criados. Necessário quando o target type é baseado em IP.         |
+| `vpc_id`             | `string` | `vpc-abcd`                                                                        | ID da VPC onde os recursos serão criados.       |
 
-Além disso, nessa mesma pasta (system), é obrigatório criar um arquivo .tf para conter mais duas variáveis:
+Além disso, nessa mesma pasta (system), é obrigatório criar um arquivo .tf (pode ser qualquer nome com a extensão .tf) para conter mais duas variáveis:
 
 1. public_key: chave pública para que seja possível acessar a máquina por SSH.
 2. my_own_ip: o IP da sua máquina pessoal.
@@ -123,11 +123,11 @@ Como é possível perceber, são executado os passos:
 6. Pull da imagem Docker do ECR para a máquina (EC2).
 7. Execução do container da aplicação.
 8. Mapeamento da porta 8080 do container para a porta 8080 da instância EC2.
-9. Configuração do acesso SSH.
+9. Configuração do acesso por SSH.
 
 ## Deploy
 
-Primeiramente, configure o arquivo "backend_config.conf", ele é essencial para o Open Tofu saber onde armazenar o estado dos recursos e do deploy.
+Primeiramente, configure o arquivo "backend_config.conf", ele é essencial para o OpenTofu saber onde armazenar o estado dos recursos e do deploy.
 
 Em exemplo de configuração é:
 
@@ -139,7 +139,7 @@ region = "us-east-1"
 encrypt = true
 ```
 
-O _path_ no s3 é determinado por bucket + key. Além disso, configure o nome da tabela do Dynamo, além da região onde encontram-se esses recursos.
+O _path_ no s3 é determinado por bucket + key. Além disso, configure o nome da tabela do Dynamo, além da região onde encontram-se esses recursos. Esses recursos devem existir previamente para o deploy possa ser efetuado.
 
 Após isso conforme descrito anteriormente, declare as variáveis no arquivo variables.tf.
 
@@ -165,10 +165,12 @@ Para verificar se o Sistema está disponível e respondendo normalmente, execute
 curl DNS:8080/ping
 ```
 
-Substituindo o "DNS" pelo DNS da sua EC2.
+Substituindo o "DNS" pelo DNS da sua EC2 (é possível localizá-lo no console da AWS).
 
 Caso tudo tenha dado certo, o retorno será
 
 ```
 {"status":"ok"}
 ```
+
+Isso indica o correto funcionamento do container dentro da EC2!
