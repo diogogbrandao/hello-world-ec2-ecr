@@ -22,7 +22,7 @@ usermod -aG docker ubuntu
 # Login to AWS ECR
 aws ecr get-login-password --region ${aws_region} | docker login --username AWS --password-stdin ${ecr_repository_url}
 
-# Pull and run Docker image
+# Pull the docker image to the machine and runs it
 docker pull ${ecr_repository_url}:latest
 docker run -d -p 8080:8080 ${ecr_repository_url}:latest
 

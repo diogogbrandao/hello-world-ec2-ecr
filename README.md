@@ -10,11 +10,14 @@ Assim, é possível utilizar o Docker na EC2 de uma maneira simples e barata. Al
 
 Os pré-requisitos para usar o código desse repositório são:
 
-1. Ter uma conta na AWS.
-2. Ter uma VPC operante.
-3. Ter um bucket do S3.
-4. Ter uma tabela no DynamoDB.
-5. Open Tofu instalado.
+1. Ter o Docker Desktop instalado e rodando.
+2. Ter uma conta na AWS.
+3. Ter as credenciais de acesso do AWS CLI configuradas na máquina.
+4. Ter uma VPC operante.
+5. Ter um bucket do S3.
+6. Ter uma tabela no DynamoDB.
+7. Ter uma imagem de container salva em um repositório do ECR (um exemplo de imagem para testes está na pasta ec2_image). 
+8. Ter o Open Tofu instalado.
 
 ## Open Tofu
 
@@ -27,7 +30,7 @@ Dentro da pasta system existem variáveis que devem ser configuradas no arquivo 
 | Name                 | Type     | Default                                                                           | Description                                                                                        |
 | -------------------- | -------- | --------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
 | `project`            | `string` | `messages-system`                                                                 | Nome do projeto. Usado para identificar e nomear recursos da AWS de forma padronizada.             |
-| `ecr_repository_url` | `string` | `abcd.dkr.ecr.us-east-1.amazonaws.com/dev-messages-system-ecr-repository`         | URL completa do repositório Amazon ECR que contém a imagem Docker da aplicação.                    |
+| `ecr_repository_url` | `string` | `abcd.dkr.ecr.us-east-1.amazonaws.com/dev-messages-system-ecr-repository`         | URL completa do repositório Amazon ECR que contem a imagem Docker da aplicação.                    |
 | `ec2_instance_type`  | `string` | `t2.nano`                                                                         | Tipo da instância EC2 onde a aplicação será executada. Define CPU e memória disponíveis.           |
 | `ec2_ami`            | `string` | `ami-0360c520857e3138f`                                                           | AMI utilizada para criar a instância EC2 (ex: Amazon Linux).                                       |
 | `aws_region`         | `string` | `us-east-1`                                                                       | Região da AWS onde os recursos serão provisionados.                                                |
@@ -46,7 +49,7 @@ Dessa forma teremos nesse arquivo:
 ```
 variable "public_key" {
     type = string
-    default = "
+    default = ""
 }
 
 variable "my_own_ip" {
@@ -102,7 +105,7 @@ usermod -aG docker ubuntu
 # Login to AWS ECR
 aws ecr get-login-password --region ${aws_region} | docker login --username AWS --password-stdin ${ecr_repository_url}
 
-# Pull and run Docker image
+# Pull the docker image to the machine and runs it
 docker pull ${ecr_repository_url}:latest
 docker run -d -p 8080:8080 ${ecr_repository_url}:latest
 
@@ -117,14 +120,16 @@ Como é possível perceber, são executado os passos:
 3. Instalação do AWS CLI v2.
 4. Autenticação no Amazon ECR.
 5. Login no repositório Amazon ECR usando Docker.
-6. Pull da imagem Docker da aplicação para o ECR.
+6. Pull da imagem Docker do ECR para a máquina (EC2).
 7. Execução do container da aplicação.
-8. Mapeiamento da porta 8080 do container para a porta 8080 da instância EC2.
+8. Mapeamento da porta 8080 do container para a porta 8080 da instância EC2.
 9. Configuração do acesso SSH.
 
 ## Deploy
 
 Primeiramente, configure o arquivo "backend_config.conf", ele é essencial para o Open Tofu saber onde armazenar o estado dos recursos e do deploy.
+
+Em exemplo de configuração é:
 
 ```
 bucket = "bootstrap-my-opentofu-states-bucket"
@@ -133,28 +138,37 @@ dynamodb_table = "bootstrap-my-opentofu-locks-table"
 region = "us-east-1"
 encrypt = true
 ```
+
 O _path_ no s3 é determinado por bucket + key. Além disso, configure o nome da tabela do Dynamo, além da região onde encontram-se esses recursos.
 
-Após isso conforme descrito anteriormente, as variáveis no arquivo variables.tf devem ser declaradas.
+Após isso conforme descrito anteriormente, declare as variáveis no arquivo variables.tf.
 
-Dentro do diretório execute o comando:
+Dentro da pasta raíz execute o comando:
 
 ```
-open tofu init
+tofu init -backend-config=backend_config.conf
 ```
 
 E, depois:
 
 ```
-open tofu apply
+tofu apply
 ```
 
 A EC2 e seu serviço serão criados em alguns segundos.
 
-## Teste do Sistema
+## Teste
 
-Para verificar se o sistema está disponível e responder normalmente, execute esse comando no seu terminal:
+Para verificar se o Sistema está disponível e respondendo normalmente, execute esse comando no seu terminal:
 
 ```
-curl 
+curl DNS:8080/ping
+```
+
+Substituindo o "DNS" pelo DNS da sua EC2.
+
+Caso tudo tenha dado certo, o retorno será
+
+```
+{"status":"ok"}
 ```
