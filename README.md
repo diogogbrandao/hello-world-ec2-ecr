@@ -1,10 +1,10 @@
 # EC2-ECR HELLO WORLD
 
-Este projeto demonstra como é possível fazer o deploy de uma AWS EC2, através do Open Tofu e do Docker, usando uma imagem armazenada no AWS ECR.
+Este projeto demonstra como é possível fazer o deploy de uma AWS EC2, através do OpenTofu e do Docker, usando uma imagem armazenada no AWS ECR.
 
 A vantagem desse método é que ele possibilita usar o poder do Docker e a diversidade de tipos instâncias EC2, evitando utilizar o AWS ECS, por ele ser mais caro e mais limitado na escolha das características de computação.
 
-Assim, é possível utilizar o Docker na EC2 de uma maneira simples e barata. Além disso o deploy pelo Open Tofu torna o processo ainda mais fácil, pois não é preciso realizar passos manuais no console da AWS e nem executar manualmente comandos de dentro da máquina.
+Assim, é possível utilizar o Docker na EC2 de uma maneira simples e barata. Além disso o deploy pelo OpenTofu torna o processo ainda mais fácil, pois não é preciso realizar passos manuais no console da AWS e nem executar manualmente comandos de dentro da máquina.
 
 ## Pré-requisitos
 
